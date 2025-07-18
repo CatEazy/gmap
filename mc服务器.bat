@@ -1,0 +1,238 @@
+@echo off
+title 批处理开服务器 - Cmd1152制作
+setlocal enabledelayedexpansion
+for /l %%i in (1,1,100) do (
+set Ts=!Ts!
+set /p =!Ts![%time:~0,-3%] 正在准备缩进字符串^(%%i/100^)...<nul
+)
+echo;[%time:~0,-3%] 正在检测Config. . .
+if not exist config.txt (
+(
+echo ;这里是服务器核心的位置^(个人建议Spigot^)
+echo Server=
+echo ;服务器运行内存单位:G
+echo G=1
+echo ;java路径，比如xxxxxx^\xxxxxxxxx^\xxxxx^\java.exe
+echo java=
+echo ;控制台颜色，可以装逼，默认空
+echo color=
+echo ;服务器停止之后是否启动，true为启动，false为不启动
+echo RS=false
+echo ;服务器端口
+echo DK=25565
+echo ;自动清理日志和错误日志（True为清理，其他为不清理）
+echo QLRZ=true
+echo ;电脑IPv4（不填会自动使用IPv6）
+echo IPv4=
+echo ;电脑IPv6（建议使用临时IPv6，不需要内网穿透，但非常容易出错，不填会自动获取）
+echo IPv6=
+echo;
+echo ;IP可以使用命令ipconfig获取
+echo;
+echo;                                                                                                                                                                                                                                                                                                                  NOB=FPTDRFSH362DFRG556GHDRGHDFS
+)>Config.txt
+echo [%time:~0,-3%] run config.txt
+start config.txt
+)
+FOR /F "eol=; delims=" %%i in (Config.txt) do (set %%i)
+if "%XY%"=="" call :xy
+if not "%stop%"=="" (
+echo [%time:~0,-3%] 此程序无法在你的电脑上面运行，请删除Config.txt后重试。
+pause
+exit
+)
+if not "%NOB%"=="FPTDRFSH362DFRG556GHDRGHDFS" (
+echo;                                                                                                                                                                                                                                                                                                                            Stop=ffff1>>Config.txt
+echo [%time:~0,-3%] 正版保护警告
+echo [%time:~0,-3%] 设置文件被修改或者版本错误。
+echo [%time:~0,-3%] 你需要从正版链接下载此文件
+echo [%time:~0,-3%] 此程序已经停止运行
+pause
+exit
+) else (
+echo [%time:~0,-3%] 正版验证完成
+goto :nocls
+)
+if not exist "%Server%" (
+echo [%time:~0,-3%] 错误:Server=%Server%
+pause
+exit
+)
+if not exist "%java%" (
+echo [%time:~0,-3%] 错误:java=%java%
+pause
+exit
+)
+if "%DK%"=="" (
+echo [%time:~0,-3%] 错误:DK=%DK%
+pause
+exit
+)
+if not "%IPv4%"=="" (
+if not exist eula.txt (
+(echo;;我们不会上传你的IPv4、IPv6和端空
+echo;;此程序仅用于朋友联机，否则后果自负
+echo;;同意请修改false为True
+echo eula=False
+)>eula.txt
+echo [%time:~0,-3%] 请查看eula.txt
+pause
+exit
+)
+FOR /F "eol=; delims=" %%i in (eula.txt) do (set %%i)
+if /i "!eula!"=="True" goto :ok
+echo [%time:~0,-3%] 请同意eula.txt
+pause
+exit
+)
+:Ok
+if not "%color%"=="" (
+color %color%
+echo [%time:~0,-3%] set color the %color%
+)
+:y
+cls
+:nocls
+if "%IPv6%"=="" call :getIPv6
+echo [%time:~0,-3%] 正在对获取来的信息进行裁剪 . . . （IPv6与IPv4的显示方法）
+if not "%IPv6%"=="" (
+set fori=或者 [%IPv6%]:%DK%
+set forn=%IPv4%:%DK%
+if "%IPv4%"=="" (
+set forn=
+set fori=[%IPv6%]:%DK%
+)
+)
+echo [%time:~0,-3%] 刷新控制台颜色，防止颜色错误
+call :colorSX
+if not "%color%"=="" (
+color %color%
+) else (
+set color=07
+color 07
+)
+echo [%time:~0,-3%] 设置颜色为 %color%
+echo [%time:~0,-3%] 正在修改文件...
+ATTRIB -r -s -h start.bat
+echo;@echo off>start.bat
+echo;setlocal enabledelayedexpansion>>start.bat
+echo;for /l %%%%i in ^(1,1,100^) do ^(set Ts^=!Ts!^)>>start.bat
+echo;echo;>>start.bat
+echo;echo;程序运行被阻止，因为服务器已经重新启动 . . .>>start.bat
+echo;echo;>>start.bat
+echo;for /l %%%%i in ^(5,-1,1^) do ^(>>start.bat
+echo;set /p =!Ts!^[即将关闭此窗口^] %%%%i 秒后自动关闭此窗口^<nul>>start.bat
+echo;ping -n 2 127.1 ^>nul>>start.bat
+echo;>>start.bat
+echo;exit>>start.bat
+ATTRIB +r +s +h start.bat
+echo [%time:~0,-3%] 服务器IP:
+echo [%time:~0,-3%] %forn%%fori%
+echo [%time:~0,-3%] IPv4外网需要内网穿透，但IPv6不需要。
+if exist run.tmp (
+for /l %%i in (1,1,13) do (
+set /p =!Ts!                                                 <nul
+ping -n 1 127.1 >nul
+set /p =!Ts![%time:~0,-3%] 发现您上次没有正确关闭服务器 . . .<nul
+ping -n 1 127.1 >nul
+ping -n 1 127.1 >nul
+)
+echo;
+)
+:ksqd
+echo [%time:~0,-3%] 正在启动 . . .
+C:/Users/Administrator/AppData/Local/Microsoft/WindowsApps/python3.12.exe c:/Users/Administrator/Desktop/McAutoSafe.py
+cd.>run.tmp
+if not exist run.tmp goto :ksqd
+"%java%" -Xmx%G%G -jar "%Server%" -nogui
+:tzqd
+echo [%time:~0,-3%] 正在停止服务器 . . .
+del run.tmp
+if exist run.tmp goto :tzqd
+echo [%time:~0,-3%] 服务器已停止。
+C:/Users/Administrator/AppData/Local/Microsoft/WindowsApps/python3.12.exe c:/Users/Administrator/Desktop/McAutoSafe.py
+call :QL
+if /i "%Rs%"=="true" (
+for /l %%i in (3,-1,0) do (
+set /p =!Ts![%time:~0,-3%] %%i 秒后重新启动 . . .<nul
+ping -n 2 127.1 >nul
+)
+goto :y
+)
+pause
+exit
+:GetIPv6
+echo [%time:~0,-3%] 请稍后，正在获取IPv6
+for /f "delims=" %%i in ('ipconfig') do (
+set IPv6=%%i
+echo %%i|findstr "IPv6" >nul && goto :yyp
+)
+echo [%time:~0,-3%] 错误:您的电脑不支持IPv6
+if "%IPv4%"=="" (
+echo [%time:~0,-3%] 重大错误:您的电脑在不支持IPv6的情况下没有填写IPv4。
+pause
+exit
+)
+:yyp
+echo [%time:~0,-3%] 正在对获取来的信息进行裁剪 . . . （删除IPv6无用信息）
+set IPv6=%IPv6: =%
+set IPv6=%IPv6:.=%
+set IPv6=%IPv6:IPv6=%
+set IPv6=%IPv6:地址=%
+set IPv6=%IPv6:~1%
+goto :eof
+:xy
+cls
+title 版权问题
+echo;
+echo; ╔═════════════════════════════════════╗
+echo; ║版权问题                                                                  ║
+echo; ╠═════════════════════════════════════╣
+echo; ║你知道吗？虽然此程序是完全免费的，但你没有查看代码的权限。                ║
+echo; ║                                                                          ║
+echo; ║警告:本计算机程序受署作权法和国际条约保护如未经授权而擅自复制或传播本程序 ║
+echo; ║（或其中任何部分），将会受到严厉的民事及刑事制裁，并将在法律许可范围内受到║
+echo; ║最大程度的起诉。                                                          ║
+echo; ║                                                                          ║
+echo; ║按任意键同意协议并继续使用程序 . . .                                      ║
+echo; ╚═════════════════════════════════════╝
+pause>nul
+echo;                                                                                                                                                                                                                                                                                                              XY=1ffffff>>Config.txt
+title 批处理开服务器 - Cmd1152制作
+goto :eof
+:colorSX
+for /l %%i in (1,1,10) do (
+color 70
+color 07
+set /a tmpj=%%i*10
+set /p =!Ts![%time:~0,-3%] 正在刷新^(!tmpj!%%/100%%^)...<nul
+)
+echo;
+goto :eof
+:QL
+if /i "%QLRZ%"=="True" (
+for /l %%i in (3,-1,0) do (
+set /p =!Ts![%time:~0,-3%] %%i 秒后清理日志和错误日志 . . .<nul
+ping -n 2 127.1 >nul
+)
+echo;
+if exist logs (
+set /p =!Ts![%time:~0,-3%] 正在清理日志和错误日志 . . .<nul
+rd /s /q logs
+md logs
+set /p =!Ts![%time:~0,-3%] 清理日志完成                <nul
+) else (
+set /p =!Ts![%time:~0,-3%] 找不到日志文件夹            <nul
+)
+if exist crash-reports (
+set /p =!Ts![%time:~0,-3%] 正在清理错误日志 . . .      <nul
+rd /s /q crash-reports
+md crash-reports
+set /p =!Ts![%time:~0,-3%] 清理错误日志完成            <nul
+) else (
+set /p =!Ts![%time:~0,-3%] 找不到错误日志 文件夹       <nul
+)
+)
+set /p =!Ts![%time:~0,-3%] 清理操作成功执行完成        <nul
+echo;
+goto :eof
